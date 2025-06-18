@@ -1,5 +1,5 @@
 # pylance: enable=WARNING_CODE
-# pylint: disable=line-too-long, invalid-name
+# pylint: disable=line-too-long, invalid-name, too-many-arguments, too-many-locals, too-many-statements, too-many-branches, too-many-return-statements, too-many-nested-blocks
 
 """Helper functions for machine learning tasks.
 
@@ -20,7 +20,6 @@ Functions:
     - scaled_split: Splits the data into train and test sets and scales the data.
     - model_barplot: Plots the accuracy of models in a bar plot.
     - model_heatmap: Plots the confusion matrices in a heatmap format.
-    - get_csv: Reads a CSV file and returns a DataFrame.
     - make_date_features: Creates date-related features from a date column.
 """
 import time
@@ -524,8 +523,8 @@ def scaled_split(X, y, test_size=0.25, random_state=42):
 
 
 def model_barplot(
-    model_accs: list | dict,
-    model_names: list = None,
+    model_accs: list,
+    model_names: list,
     xlim: tuple = (80, 100),
     *,
     title: str = "Accuracy of Models",
@@ -548,9 +547,6 @@ def model_barplot(
     - The accuracy scores are displayed as text annotations on the bars.
     - The plot is displayed using the `plt.show()` function.
     """
-    if isinstance(model_accs, dict):
-        model_names = list(model_accs.keys())
-        model_accs = list(model_accs.values())
 
     df_accs = pd.DataFrame({"models": model_names, "accuracies_models": model_accs})
     df_sorted = df_accs.sort_values(by="accuracies_models", ascending=False)
@@ -658,26 +654,6 @@ def model_heatmap(
         if tight_layout is True:
             fig.tight_layout()
         plt.show()
-
-
-def get_csv(name):
-    """
-    Reads a csv file and returns a dataframe
-
-    Parameters:
-        name (str): The name of the csv file to read, without the '.csv' extension.
-
-    Returns:
-    pandas.DataFrame: A DataFrame containing the data from the csv file.
-
-    Notes:
-    - This function uses the `pd.read_csv` function from the pandas library to read the csv file.
-    - The file path is hardcoded to '/users/ryanschwartz/Desktop/Code/Data/CSV/{name}.csv'.
-    - If the file is not found or cannot be read, an error will be raised by `pd.read_csv`.
-    """
-
-    df = pd.read_csv(f"/users/ryanschwartz/Desktop/Code/Data/CSV/{name}.csv")
-    return df
 
 
 def make_date_features(
